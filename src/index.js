@@ -12,7 +12,7 @@ let rdf = "https://arche-curation.acdh-dev.oeaw.ac.at/api/562500/metadata?format
 //     key: '562500/metadata?readMode=resource'
 // };
 
-function download(url) { 
+function download(url, callback) { 
     var req = https.get(url, (response) => {
         // console.log("statusCode:", response.statusCode);
         // console.log("headers:", response.headers);
@@ -22,12 +22,13 @@ function download(url) {
             n_triples += d;
         });
         response.on("end", () => {
-            console.log(n_triples);
-            // add code to handle data
+            return callback(n_triples);
         });        
     }).on("error", (e) => {
         console.log(e);
     });
     req.end();
 }
-download(rdf)
+download(rdf, (res) => {
+    console.log(res);
+})
