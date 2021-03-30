@@ -1,57 +1,48 @@
+const axios = require('axios').default;
+
+// ################# Script for testing ##################################
+
+// var host = "https://arche-curation.acdh-dev.oeaw.ac.at/api";
+// var format = "application/n-triples";
+// var resourceId = "/562500/";
+// var readMode = 'relatives';
+// ARCHE_downloader(host, resourceId, format, readMode, function(rs) {
+//     var subject = null;
+//     var predicate = "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf";
+//     var object = "https://arche-curation.acdh-dev.oeaw.ac.at/api/562500";
+//     var resources = N3Parser(subject, predicate, object, rs);   
+//     var s = null;
+//     var p = "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle";
+//     var o = null;
+//     var titles = N3Parser(s, p, o, rs);
+//     var result = SORT_triples(resources, titles);        
+//     console.log(result);
+// });
+
 // #######################################################################
 // ###### function ARCHE_downloader to download data from ARCHE ##########
 // #######################################################################
 
-// , subject, predicate, object
-
-// const options = {
-//     hostname: 'arche-curation.acdh-dev.oeaw.ac.at/api',
-//     port: 443,
-//     path: '/',
-//     method: 'GET',
-//     key: '562500/metadata?readMode=resource'
-// };
-
 module.exports.ARCHE_downloader = (host, resourceId, format, readMode, callback) => {
-    const https = require('https');
-    const http = require('http');
-    const path = require('path'); 
-    let url = path.join(host, resourceId, `metadata?format=${format}&readMode=${readMode}`);
-    if (url.startsWith('https')){
-        let req = https.get(url, (response) => {
-            // console.log("statusCode:", response.statusCode);
-            // console.log("headers:", response.headers);
-            var data = "";
-            response.on("data", (d) => {
-                data += d;
-            }).on("end", () => {
-                return callback(data);
-            });    
-        }).on("error", (e) => {
-            console.log(e);
-        });
-        req.end();
-    } else {
-        let req = http.get(url, (response) => {
-            // console.log("statusCode:", response.statusCode);
-            // console.log("headers:", response.headers);
-            data = "";
-            response.on("data", (d) => {
-                data += d;
-            }).on("end", () => {
-                return callback(data);
-            });         
-        }).on("error", (e) => {
-            console.log(e);
-        });
-        req.end();        
-    }    
+    let url = host + resourceId + `metadata?format=${format}&readMode=${readMode}`;
+    console.log(url);
+    axios.get(url)
+    // console.log("statusCode:", response.statusCode);
+    // console.log("headers:", response.headers);
+    .then(function (response) {
+        return callback(response.data);
+    })            
+    .catch(function (error) {
+        // handle error
+        console.log(error);
+    })
 }
 // #######################################################################
 // ############## FUNCTION N3Parser for parsing rdf-triples ##############
 // #######################################################################
 
-module.exports.N3Parser = (subject, predicate, object, data) => {          
+module.exports.N3Parser = (subject, predicate, object, data) => {   
+    const turtle_format = 'N-Triples';       
     const N3 = require('n3');
     const { DataFactory } = N3;
     const { namedNode, literal, defaultGraph, quad } = DataFactory;
@@ -66,10 +57,15 @@ module.exports.N3Parser = (subject, predicate, object, data) => {
     result.forEach(function(data){
         let subject = data._subject.id;
         let predicate = data._predicate.id;
-        let object = data._object.id.replace('"', '');
+        let object = data._object.id;
         let object2 = object.replace('"', '');
-        let object3 = object2.replace('@de', '');
-        subjects_with_title.push({"subject": subject, "predicate": predicate, "object": object3});    
+        let object3 = object2.replace('"', '');
+        let object4 = object3.replace('@de', '');
+        let object5 = object4.replace('@und', '');
+        // let object = data._object.id.replace('"', '');
+        // let object2 = object.replace('"', '');
+        // let object3 = object2.replace('@de', '');
+        subjects_with_title.push({"subject": subject, "predicate": predicate, "object": object5});    
     })      
     return subjects_with_title;
 }
