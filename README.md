@@ -14,7 +14,7 @@ To access the ACDH/ARCHE API and use the data in web-applications the externaliz
 
 In JS:
 
-`const const {ARCHEdownloadResourceIdM, ARCHErdfQuery, ARCHEmatchJSON} = require("arche-api");`
+`const {ARCHEdownloadResourceIdM, ARCHErdfQuery, ARCHEmatchJSON} = require("arche-api");`
 
 or 
 
