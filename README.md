@@ -88,28 +88,32 @@ console.log(result);
 ## Complete ARCHE Download example
 
 ```javascript
+const downloader = new ARCHEapi.ARCHEdownloadResourceIdM();
+const query = new ARCHEapi.ARCHErdfQuery();
+const match = new ARCHEapi.ARCHEmatchJSON();
+
 // declaring variables for downlaoding data
 var host = "https://arche.acdh.oeaw.ac.at/api";
 var format = "application/n-triples";
 var resourceId = "108254";
 var readMode = 'relatives';
 
-ARCHEdownloadResourceIdM(host, resourceId, format, readMode, (rs) => {
+downloader(host, resourceId, format, readMode, (rs) => {
     console.log(rs);
     // first query:
     var subject = null;
     var predicate = "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf";
     var object = "https://arche.acdh.oeaw.ac.at/api/108254";
-    var resources = ARCHErdfQuery(subject, predicate, object, rs);  
+    var resources = query(subject, predicate, object, rs);  
     console.log(resources);
     // second query:
     var subject = null;
     var predicate = "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle";
     var object = null;
-    var titles = ARCHErdfQuery(subject, predicate, object, rs);
+    var titles = query(subject, predicate, object, rs);
     console.log(titles);
     // matching:
-    var result = ARCHEmatchJSON(resources, titles);        
+    var result = match(resources, titles);        
     console.log(result);
 });
 ```
