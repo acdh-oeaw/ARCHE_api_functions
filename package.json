@@ -1,6 +1,6 @@
 {
   "name": "arche-api",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Functions to access ARCHE API and convert rdf data.",
   "module": "src/index.js",
   "env": {
