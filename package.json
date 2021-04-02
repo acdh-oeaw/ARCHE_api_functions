@@ -1,5 +1,5 @@
 {
-  "name": "arche_api",
+  "name": "arche-api",
   "version": "1.0.0",
   "description": "Functions to access ARCHE API and convert rdf data.",
   "module": "src/index.js",
