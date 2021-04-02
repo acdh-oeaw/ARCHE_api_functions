@@ -7,7 +7,7 @@ module.exports = {
         app: './src/index.js',
     },
     output: {
-        filename: 'arche-api.js',
+        filename: 'arche-api.min.js',
         path: path.resolve(__dirname, 'lib'),
         clean: true,
         library: {
