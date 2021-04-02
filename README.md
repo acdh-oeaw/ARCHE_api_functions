@@ -12,14 +12,6 @@ To access the ACDH/ARCHE API and use the data in web-applications the externaliz
 
 `npm install arche-api`
 
-In JS
-
-`const {ARCHEdownloadResourceIdM, ARCHErdfQuery, ARCHEmatchJSON} = require("arche-api");`
-
-or 
-
-`import {ARCHEdownloadResourceIdM, ARCHErdfQuery, ARCHEmatchJSON} from "arche-api";`
-
 In HTML:
 
 `<script src="https://unpkg.com/arche-api@1.0.0/lib/arche-api.min.js"></script>`
