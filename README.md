@@ -93,27 +93,27 @@ const query = ARCHEapi.ARCHErdfQuery;
 const match = ARCHEapi.ARCHEmatchJSON;
 
 // declaring variables for downlaoding data
-var host = "https://arche.acdh.oeaw.ac.at/api";
-var format = "application/n-triples";
-var resourceId = "108254";
-var readMode = 'relatives';
+const host = "https://arche.acdh.oeaw.ac.at/api";
+const format = "application/n-triples";
+const resourceId = "108254";
+const readMode = 'relatives';
 
 downloader(host, resourceId, format, readMode, (rs) => {
     console.log(rs);
     // first query:
-    var subject = null;
-    var predicate = "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf";
-    var object = "https://arche.acdh.oeaw.ac.at/api/108254";
-    var resources = query(subject, predicate, object, rs);  
+    let subject = null;
+    let predicate = "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf";
+    let object = "https://arche.acdh.oeaw.ac.at/api/108254";
+    let resources = query(subject, predicate, object, rs);  
     console.log(resources);
     // second query:
-    var subject = null;
-    var predicate = "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle";
-    var object = null;
-    var titles = query(subject, predicate, object, rs);
+    let subject = null;
+    let predicate = "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle";
+    let object = null;
+    let titles = query(subject, predicate, object, rs);
     console.log(titles);
     // matching:
-    var result = match(resources, titles);        
+    let result = match(resources, titles);        
     console.log(result);
 });
 ```
