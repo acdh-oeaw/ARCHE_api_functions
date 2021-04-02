@@ -14,15 +14,15 @@ To access the ACDH/ARCHE API and use the data in web-applications the externaliz
 
 In JS
 
-`const {ARCHEdownloadResourceIdM, ARCHErdfQuery, ARCHEmatchJSON} = require("ARCHEapi");`
+`const {ARCHEdownloadResourceIdM, ARCHErdfQuery, ARCHEmatchJSON} = require("arche-api");`
 
 or 
 
-`import {ARCHEdownloadResourceIdM, ARCHErdfQuery, ARCHEmatchJSON} from "ARCHEapi";`
+`import {ARCHEdownloadResourceIdM, ARCHErdfQuery, ARCHEmatchJSON} from "arche-api";`
 
 In HTML:
 
-`<script type="text/javascript" src=""></script>
+`<script src="https://unpkg.com/arche-api@1.0.0/lib/arche-api.min.js"></script>`
 
 ## Download function(s)
 
