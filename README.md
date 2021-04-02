@@ -41,7 +41,7 @@ Returns a text response as `callback()`.
 ### Usage: 
 
 ```javascript
-const downloader = new ARCHEapi.ARCHEdownloadResourceIdM();
+const downloader = ARCHEapi.ARCHEdownloadResourceIdM;
 
 downloader(host, resourceId, format, readMode, (response) => {
   console.log(response);
@@ -61,7 +61,7 @@ Creates quads and returns a JSON object with `subject: <value>, predicate: <valu
 ### Usage: 
 
 ```javascript
-const query = new ARCHEapi.ARCHErdfQuery();
+const query = ARCHEapi.ARCHErdfQuery;
 
 const result = query(subject, predicate, object, data);
 console.log(result);
@@ -79,7 +79,7 @@ Returns and `<Object>`
 ### Usage:
 
 ```javascript
-const match = new ARCHEapi.ARCHEmatchJSON();
+const match = ARCHEapi.ARCHEmatchJSON;
 
 const result = match(dataset1, dataset2);
 console.log(result);
@@ -88,9 +88,9 @@ console.log(result);
 ## Complete ARCHE Download example
 
 ```javascript
-const downloader = new ARCHEapi.ARCHEdownloadResourceIdM();
-const query = new ARCHEapi.ARCHErdfQuery();
-const match = new ARCHEapi.ARCHEmatchJSON();
+const downloader = ARCHEapi.ARCHEdownloadResourceIdM;
+const query = ARCHEapi.ARCHErdfQuery;
+const match = ARCHEapi.ARCHEmatchJSON;
 
 // declaring variables for downlaoding data
 var host = "https://arche.acdh.oeaw.ac.at/api";
