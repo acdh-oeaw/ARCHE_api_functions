@@ -1,30 +1,37 @@
+if (process.env.NODE_ENV !== 'production') {
+    console.log('Looks like we are in development mode!');
+}
+
 // #######################################################################
 // ###### function ARCHE_downloader to download data from ARCHE ##########
 // #######################################################################
 
-const axios = require('axios').default;
+const { default: fetch } = require('node-fetch');
 
-module.exports.ARCHE_downloader = (host, resourceId, format, readMode, callback) => {
+module.exports.ARCHE_downloader = async(host, resourceId, format, readMode, callback) => {   
     let url = host + resourceId + `metadata?format=${format}&readMode=${readMode}`;
+    const options = {
+        method: 'GET'
+    };
     console.log(url);
-    axios.get(url)
-    // console.log("statusCode:", response.statusCode);
-    // console.log("headers:", response.headers);
-    .then(function (response) {
-        return callback(response.data);
-    })            
-    .catch(function (error) {
-        // handle error
+    try {
+        const response = await fetch(url, options);
+        console.log("statusCode:", response.statusCode);
+        console.log("headers:", response.headers);
+        const body = await response.text();
+        return callback(body);
+    } catch (error) {
         console.log(error);
-    })
+    }    
 }
 // #######################################################################
-// ############## FUNCTION N3Parser for parsing rdf-triples ##############
+// ###### FUNCTION N3Parser for parsing N-Triples ARCHE respone ##########
 // #######################################################################
 
+const N3 = require('n3');
+
 module.exports.N3Parser = (subject, predicate, object, data) => {   
-    const turtle_format = 'N-Triples';       
-    const N3 = require('n3');
+    const turtle_format = 'N-Triples';      
     const { DataFactory } = N3;
     const { namedNode, literal, defaultGraph, quad } = DataFactory;
     const parser = new N3.Parser({ format: turtle_format });
@@ -34,22 +41,24 @@ module.exports.N3Parser = (subject, predicate, object, data) => {
     store.addQuads(quads);
     const result = store.getQuads(subject, predicate, object, null);        
     // converting hasTitle array to object
-    const subjects_with_title = [];
-    result.forEach(function(data){
+    const resultJson = [];
+    result.forEach(data => {
         let subject = data._subject.id;
         let predicate = data._predicate.id;
-        let object = data._object.id;
-        let object2 = object.replace('"', '');
-        let object3 = object2.replace('"', '');
-        let object4 = object3.replace('@de', '');
-        let object5 = object4.replace('@und', '');
-        let object6 = object5.replace('@en', '');
-        subjects_with_title.push({"subject": subject, "predicate": predicate, "object": object6});    
+        let regex = new RegExp('"@\\w+');
+        let object = data._object.id.replace(regex, '').replace('"','');
+        resultJson.push(
+            {
+                "subject": subject,
+                "predicate": predicate, 
+                "object": object
+            }
+        );    
     })      
-    return subjects_with_title;
+    return resultJson;
 }
 // #######################################################################
-// ######### FUNCTION SORT_triples to match two json datasets ############
+// ### FUNCTION SORT_triples to match two json datasets by subject id ####
 // #######################################################################
 
 module.exports.SORT_triples = (dataset1, dataset2) => {
@@ -57,7 +66,13 @@ module.exports.SORT_triples = (dataset1, dataset2) => {
     for (let i = 0; i < dataset1.length; i++) {
         for (let key in dataset2){
             if (dataset1[i].subject == dataset2[key].subject) {
-                result.push({"subject": dataset1[i].subject, "object": dataset2[key].object});
+                result.push(
+                    {
+                        "subject": dataset1[i].subject, 
+                        "predicte": dataset2[key].predicate, 
+                        "object": dataset2[key].object
+                    }
+                );
             }
         }
     }
