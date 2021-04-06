@@ -51,8 +51,8 @@ module.exports.ARCHErdfQuery = (subject, predicate, object, data) => {
     result.forEach(data => {
         let subject = data._subject.id;
         let predicate = data._predicate.id;
-        let regex = new RegExp('"@\\w+');
-        let object = data._object.id.replace(regex, '').replace('"','');
+        let regex = new RegExp('@\\w+');
+        let object = data._object.id.replace(regex, '').replace('"','').replace('"','');
         resultJson.push(
             {
                 "subject": subject,
@@ -75,7 +75,7 @@ module.exports.ARCHEmatchJSON = (dataset1, dataset2) => {
                 result.push(
                     {
                         "subject": dataset1[i].subject, 
-                        "predicte": dataset2[key].predicate, 
+                        "predicate": dataset2[key].predicate, 
                         "object": dataset2[key].object
                     }
                 );

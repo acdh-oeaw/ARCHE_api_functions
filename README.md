@@ -22,7 +22,7 @@ or
 
 In HTML:
 
-`<script src="https://unpkg.com/arche-api@1.0.3/lib/arche-api.min.js"></script>`
+`<script src="https://unpkg.com/arche-api@1.0.4/lib/arche-api.min.js"></script>`
 
 ## Download function(s)
 
