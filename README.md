@@ -1,4 +1,4 @@
-# ARCHE API funcitons
+# ARCHE API functions
 
 ## Introduction
 
