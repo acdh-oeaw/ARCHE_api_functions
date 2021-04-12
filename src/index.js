@@ -26,6 +26,25 @@ module.exports.ARCHEdownloadResourceIdM = async(host, resourceId, format, readMo
         console.log(error);
     }    
 }
+
+module.exports.ARCHEsearchText = async(host, property0, value0, searchQuery, ftsMaxFragments, callback) => {   
+    let url = host + 'property[0]=' + property0 + '&value[0]=' + value0 + '&property[1]=BINARY' + '&operator[1]=@@' +
+     '&value[1]=' + searchQuery + '&ftsProperty=BINARY' + '&ftsQuery=' + searchQuery + '&ftsMaxFragments=' + ftsMaxFragments;
+    const options = {
+        method: 'GET'
+    };
+    console.log(url);
+    try {
+        const response = await fetch(url, options);
+        console.log("statusCode:", response.statusCode);
+        console.log("headers:", response.headers);
+        const body = await response.text();
+        return callback(body);
+    } catch (error) {
+        console.log(error);
+    }    
+}
+
 // #######################################################################
 // ###### FUNCTION N3Parser for parsing N-Triples ARCHE respone ##########
 // #######################################################################
@@ -77,6 +96,44 @@ module.exports.ARCHEmatchJSON = (dataset1, dataset2) => {
                         "subject": dataset1[i].subject, 
                         "predicate": dataset2[key].predicate, 
                         "object": dataset2[key].object
+                    }
+                );
+            }
+        }
+    }
+    return result;
+}
+
+module.exports.ARCHEmatchJSON1 = (dataset1, dataset2) => {
+    const result = [];
+    for (let i = 0; i < dataset1.length; i++) {
+        for (let key in dataset2){
+            if (dataset1[i].subject == dataset2[key].subject) {
+                result.push(
+                    {
+                        "subject": dataset1[i].subject, 
+                        "predicate": dataset1[i].predicate, 
+                        "object": dataset1[i].object,
+                        "subject1": dataset2[key].subject, 
+                        "predicate1": dataset2[key].predicate, 
+                        "object1": dataset2[key].object
+                    }
+                );
+            }
+        }
+    }
+    return result;
+}
+
+module.exports.ARCHEmatchJSON2 = (dataset1, dataset2) => {
+    const result = [];
+    for (let i = 0; i < dataset1.length; i++) {
+        for (let key in dataset2){
+            if (dataset1[i].subject == dataset2[key].subject) {
+                result.push(
+                    {
+                        "dataset1": dataset1[i],
+                        "dataset2": dataset2[key]
                     }
                 );
             }
