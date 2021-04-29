@@ -56,7 +56,7 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 https://github.com/rdfjs/N3.js*/
 
-module.exports.ARCHErdfQuery = (subject, predicate, object, data) => {      
+module.exports.ARCHErdfQuery = async(subject, predicate, object, data) => {      
     const { DataFactory } = N3;
     const { namedNode, literal, defaultGraph, quad } = DataFactory;
     const parser = new N3.Parser();
@@ -86,7 +86,7 @@ module.exports.ARCHErdfQuery = (subject, predicate, object, data) => {
 // ### FUNCTION SORT_triples to match two json datasets by subject id ####
 // #######################################################################
 
-module.exports.ARCHEmatchJSON = (dataset1, dataset2) => {
+module.exports.ARCHEmatchJSON = async(dataset1, dataset2) => {
     const result = [];
     for (let i = 0; i < dataset1.length; i++) {
         for (let key in dataset2){
@@ -104,7 +104,7 @@ module.exports.ARCHEmatchJSON = (dataset1, dataset2) => {
     return result;
 }
 
-module.exports.ARCHEmatchJSON1 = (dataset1, dataset2) => {
+module.exports.ARCHEmatchJSON1 = async(dataset1, dataset2) => {
     const result = [];
     for (let i = 0; i < dataset1.length; i++) {
         for (let key in dataset2){
@@ -125,7 +125,7 @@ module.exports.ARCHEmatchJSON1 = (dataset1, dataset2) => {
     return result;
 }
 
-module.exports.ARCHEmatchJSON2 = (dataset1, dataset2) => {
+module.exports.ARCHEmatchJSON2 = async(dataset1, dataset2) => {
     const result = [];
     for (let i = 0; i < dataset1.length; i++) {
         for (let key in dataset2){
