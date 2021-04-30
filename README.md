@@ -2,11 +2,11 @@
 
 ## Introduction
 
-The npm package library ARCHEapi contains three functions that work with the ACDH/ARCH API and process metadata about projects into JSON objects.
+The npm package library ARCHEapi contains three functions that work with the ACDH/ARCHE API and processes metadata, about projects, from RDF N-Triples as String response to JSON objects.
 
 ## Motivation
 
-To access the ACDH/ARCHE API and use the data in web-applications the externalized functions provide better usability and creating dynamic webpages. 
+To access the ACDH/ARCHE API and use the data in web-applications the externalized functions provide better usability in creating dynamic webpages. 
 
 ## Installation
 
@@ -36,7 +36,7 @@ The async function requires four arguments and provides a callback:
 - `readMode: <string>` Exp.: "relatives"
 - `callback: <Function>`
 
-Returns a text response as `callback()`.
+Returns a text (string) response as `callback()`.
 
 ### Usage: 
 
