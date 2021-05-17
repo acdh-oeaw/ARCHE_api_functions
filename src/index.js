@@ -71,14 +71,16 @@ module.exports.ARCHErdfQuery = async(subject, predicate, object, data) => {
         let subject = data._subject.id;
         let predicate = data._predicate.id;
         let regex = new RegExp('@\\w+');
-        let object = data._object.id.replace(regex, '').replace('"','').replace('"','');
+        let object = data._object.id;
         resultJson.push(
             {
                 "subject": subject,
                 "predicate": predicate, 
-                "object": object
+                "object": object.replace('"','').replace('"','')
             }
-        );    
+            
+        ); 
+              
     })      
     return resultJson;
 }
