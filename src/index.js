@@ -41,7 +41,7 @@ module.exports.ARCHEdownloadResourceIdM2 = async(options) => {
         }
         // var result = await Promise.all([content]);
         return content;
-        
+
     } catch (error) {
         console.log(error);
         console.log("statusCode:", response.statusCode);
@@ -103,9 +103,9 @@ module.exports.ARCHErdfQuery = (options, data) => {
     store.addQuads(quads);
     const result = store.getQuads(options.subject, options.predicate, options.object, null);        
     // converting hasTitle array to object
-    const resultJson = {
-        "value":[],
-        "date":{}
+    var resultJson = {
+        "value": [],
+        "date": {}
     };
     result.forEach(data => {
         var subject = data._subject.id;
@@ -134,15 +134,27 @@ module.exports.ARCHErdfQuery = (options, data) => {
                 "lang": lang
             };
         resultJson.value.push(predicateObj);
-        var now = new Date();
-        if (options.expiry) {
-            now.setDate(now.getDate() + options.expiry);
-        } else  {
-            now.setDate(now.getDate() + 7);
-        }        
-        resultJson.date["expiry"] = now;
-    });   
-    return resultJson;
+    });
+    if (options.paginate) {
+        let length = resultJson.value.length;
+        let pages = Math.ceil(length / parseInt(options.paginate));
+        console.log(length);   
+        console.log(pages);                
+        var start = 0;
+        for (var i = 0; i < pages; i++) {            
+            var paginated = resultJson.value.slice(start, start + parseInt(options.paginate));
+            start + parseInt(options.paginate) + 1;
+            resultJson[`value${i}`] = paginated;   
+        }
+    }
+    var now = new Date();
+    if (options.expiry) {
+        now.setDate(now.getDate() + options.expiry);
+    } else  {
+        now.setDate(now.getDate() + 7);
+    }        
+    resultJson.date["expiry"] = now;
+    return resultJson
 }
 // #######################################################################
 // ### FUNCTION SORT_triples to match two json datasets by subject id ####
