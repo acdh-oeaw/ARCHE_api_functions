@@ -14,15 +14,15 @@ To access the ACDH/ARCHE API and use the data in web-applications the externaliz
 
 In JS:
 
-`const {ARCHEdownloadResourceIdM, ARCHErdfQuery, ARCHEmatchJSON} = require("arche-api/src");`
+`const {ARCHEdownloadResourceIdM, ARCHEdownloadResourceIdM2, openFile, ARCHErdfQuery, ARCHEmatchJSON} = require("arche-api/src");`
 
 or 
 
-`import {ARCHEdownloadResourceIdM, ARCHErdfQuery, ARCHEmatchJSON} from "arche-api/src";`
+`import {ARCHEdownloadResourceIdM, ARCHEdownloadResourceIdM2, openFile, ARCHErdfQuery, ARCHEmatchJSON} from "arche-api/src";`
 
 In HTML:
 
-`<script src="https://unpkg.com/arche-api@1.0.4/lib/arche-api.min.js"></script>`
+`<script src="https://unpkg.com/arche-api@1.2.0/lib/arche-api.min.js"></script>`
 
 ## Download function(s)
 
@@ -36,6 +36,15 @@ The async function requires four arguments and provides a callback:
 - `readMode: <string>` Exp.: "relatives"
 - `callback: <Function>`
 
+Starting from version 1.2.0 the arguments are passed as object `options`:
+
+options: {
+  `host: <string>,` e.g.: "https://arche.acdh.oeaw.ac.at/api"
+  `resourceID: <string>,` Exp.: "108254"
+  `format: <string>,` e.g.: "application/n-triples"
+  `readMode: <string>` e.g.: "relatives"
+}
+
 Returns a text (string) response as `callback()`.
 
 ### Usage: 
@@ -43,7 +52,7 @@ Returns a text (string) response as `callback()`.
 ```javascript
 const downloader = ARCHEapi.ARCHEdownloadResourceIdM;
 
-downloader(host, resourceId, format, readMode, (response) => {
+downloader(options, (response) => {
   console.log(response);
 })
 ```
@@ -56,14 +65,45 @@ So far one RDF query function was created using the node js module N3 (https://g
 - `objects: <string> or null` Exp.: "some text" or `null`
 - `data: <string>` as Turtle, TriG, N-Triples, and N-Quads formats (More info: https://github.com/rdfjs/N3.js/#parsing)
 
-Creates quads and returns a JSON object with `subject: <value>, predicate: <value>, object: <value>`.
+Starting from version 1.2.0 the arguments are passed as object `options`:
+
+options: {
+  `subject: <string> or null` Exp.: "https://arche.acdh.oeaw.ac.at/api/108254" or `null`
+  `predicate: <string> or null` Exp.: "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle" or `null`
+  `objects: <string> or null` Exp.: "some text" or `null`
+  `data: <string>` as Turtle, TriG, N-Triples, and N-Quads formats (More info: https://github.com/rdfjs/N3.js/#parsing),
+  `expiry: <integer>` e.g. 7. The default value if nothing is provided is 7. (Optional parameter to create expiry date for the query) 
+}
+
+
+Creates quads and returns a JSON object:
+
+```javascript
+result : {
+  values: [
+    "predicate1": {
+      "subject": "subject",
+      "prediate": "predicate",
+      "object": "object",
+      "lang": "language"
+    },
+    "predicate2": {
+      "subject": "subject",
+      "prediate": "predicate",
+      "object": "object",
+      "lang": "language"
+    },
+  ],
+  date: { expiry: "date" }
+}
+```
 
 ### Usage: 
 
 ```javascript
 const query = ARCHEapi.ARCHErdfQuery;
 
-const result = query(subject, predicate, object, data);
+const result = query(options, data);
 console.log(result);
 ```
 
@@ -116,6 +156,45 @@ downloader(host, resourceId, format, readMode, (rs) => {
     let result = match(resources, titles);        
     console.log(result);
 });
+
+// new with version 1.2.0
+
+const options = {
+  "host" = "https://arche.acdh.oeaw.ac.at/api",
+  "format" = "application/n-triples",
+  "resourceId" = "108254",
+  "readMode" = 'relatives'
+};
+
+downloader(options, (rs) => {
+    console.log(rs);
+    // query:
+    const options = {
+      "subject" = "https://arche.acdh.oeaw.ac.at/api",
+      "predicate" = "application/n-triples",
+      "object" = "108254",
+      "expiry" = 7
+    };
+    let resources = query(options, rs);  
+    console.log(resources);
+    // how to use the object
+    var array = {
+        "titles":[],
+        "creators":[]
+    };
+    resources.value.forEach(function(rs) {
+        var hasTitle = rs.hasTitle;
+        var hasCreator = rs.hasCreator;
+        if (hasTitle) {
+            array.titles.push(hasTitle)
+        }
+        else if (hasCreator) {
+            array.creators.push(hasCreator)
+        }
+    });     
+    console.log(array);
+});
+
 ```
 
 ## License
