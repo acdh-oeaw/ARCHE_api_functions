@@ -38,12 +38,14 @@ The async function requires four arguments and provides a callback:
 
 Starting from version 1.2.0 the arguments are passed as object `options`:
 
-options: {
-  `host: <string>,` e.g.: "https://arche.acdh.oeaw.ac.at/api"
-  `resourceID: <string>,` Exp.: "108254"
-  `format: <string>,` e.g.: "application/n-triples"
-  `readMode: <string>` e.g.: "relatives"
+```javascript
+"options": {
+  "host": "string",
+  "resourceID": "string",
+  "format": "string",
+  "readMode": "string"
 }
+```
 
 Returns a text (string) response as `callback()`.
 
@@ -67,20 +69,21 @@ So far one RDF query function was created using the node js module N3 (https://g
 
 Starting from version 1.2.0 the arguments are passed as object `options`:
 
-options: {
-  `subject: <string> or null` Exp.: "https://arche.acdh.oeaw.ac.at/api/108254" or `null`
-  `predicate: <string> or null` Exp.: "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle" or `null`
-  `objects: <string> or null` Exp.: "some text" or `null`
-  `data: <string>` as Turtle, TriG, N-Triples, and N-Quads formats (More info: https://github.com/rdfjs/N3.js/#parsing),
-  `expiry: <integer>` e.g. 7. The default value if nothing is provided is 7. (Optional parameter to create expiry date for the query) 
+```javascript
+"options": {
+  "subject": "string" or null
+  "predicate": "string" or null
+  "objects": "string" or null
+  "data": "string"
+  "expiry": "integer" or null
 }
-
+```
 
 Creates quads and returns a JSON object:
 
 ```javascript
-result : {
-  values: [
+"result" : {
+  "values": [
     "predicate1": {
       "subject": "subject",
       "prediate": "predicate",
@@ -94,7 +97,7 @@ result : {
       "lang": "language"
     },
   ],
-  date: { expiry: "date" }
+  "date": { "expiry": "date" }
 }
 ```
 
@@ -163,7 +166,7 @@ const options = {
   "host" = "https://arche.acdh.oeaw.ac.at/api",
   "format" = "application/n-triples",
   "resourceId" = "108254",
-  "readMode" = 'relatives'
+  "readMode" = "relatives"
 };
 
 downloader(options, (rs) => {
