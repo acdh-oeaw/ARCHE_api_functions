@@ -3,6 +3,7 @@
 // #######################################################################
 
 const { default: fetch } = require('node-fetch');
+
 /*The MIT License (MIT)
 Copyright (c) 2016 - 2020 Node Fetch Team
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -10,7 +11,7 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 https://github.com/node-fetch/node-fetch*/
 
-module.exports.openDir = async(filepath, callback) => {
+module.exports.openFile = async(filepath, callback) => {
     const options = {
         method: 'GET'
     };
@@ -25,20 +26,41 @@ module.exports.openDir = async(filepath, callback) => {
     }    
 }
 
-module.exports.ARCHEdownloadResourceIdM = async(host, resourceId, format, readMode, callback) => {   
-    let url = host + '/' + resourceId + '/' + `metadata?format=${format}&readMode=${readMode}`;
-    const options = {
-        method: 'GET'
-    };
+module.exports.ARCHEdownloadResourceIdM2 = async(options) => {   
+    let url = options.host + '/' + options.resourceId + '/' + `metadata?format=${options.format}&readMode=${options.readMode}`;
     console.log(url);
+    let content;
     try {
-        const response = await fetch(url, options);
-        console.log("statusCode:", response.statusCode);
-        console.log("headers:", response.headers);
-        const body = await response.text();
-        return callback(body);
+        var response = await fetch(url);
+        if (options.format === 'blob') {
+            content = await response.blob();
+        } else if (options.format === 'application/n-triples' | options.format === 'text') {
+            content = await response.text();
+        } else if (options.format === 'application/json') {
+            content = await response.json();
+        }
+        // var result = await Promise.all([content]);
+        return content;
+        
     } catch (error) {
         console.log(error);
+        console.log("statusCode:", response.statusCode);
+        console.log("headers:", response.headers);
+    }
+}
+
+module.exports.ARCHEdownloadResourceIdM = async(options, callback) => {   
+    let url = options.host + '/' + options.resourceId + '/' + `metadata?format=${options.format}&readMode=${options.readMode}`;
+    console.log(url);
+    try {
+        let response = await fetch(url);        
+        let body = await response.text();
+        return callback(body);
+        
+    } catch (error) {
+        console.log(error);
+        console.log("statusCode:", response.statusCode);
+        console.log("headers:", response.headers);
     }    
 }
 
@@ -71,7 +93,7 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 https://github.com/rdfjs/N3.js*/
 
-module.exports.ARCHErdfQuery = (subject, predicate, object, data) => {      
+module.exports.ARCHErdfQuery = (options, data) => {      
     const { DataFactory } = N3;
     const { namedNode, literal, defaultGraph, quad } = DataFactory;
     const parser = new N3.Parser();
@@ -79,23 +101,47 @@ module.exports.ARCHErdfQuery = (subject, predicate, object, data) => {
     // creating and n3 store for storing the parsed quads
     const store = new N3.Store();
     store.addQuads(quads);
-    const result = store.getQuads(subject, predicate, object, null);        
+    const result = store.getQuads(options.subject, options.predicate, options.object, null);        
     // converting hasTitle array to object
-    const resultJson = [];
+    const resultJson = {
+        "value":[],
+        "date":{}
+    };
     result.forEach(data => {
-        let subject = data._subject.id;
-        let predicate = data._predicate.id;
-        let regex = new RegExp('@\\w+');
-        let object = data._object.id;
-        resultJson.push(
+        var subject = data._subject.id;
+        var predicate = data._predicate.id;
+        var regex = new RegExp('#\\w+');
+        var predicateNoNS = regex.exec(predicate);
+        var predicateObj = {};
+        if (predicateNoNS) {
+            var predicateNoNS = predicateNoNS[0].replace('#','');
+        } else {
+            var predicateNoNS = "undefined";
+        } 
+        var regex = new RegExp('@\\w+');
+        var object = data._object.id;
+        var language = regex.exec(object);
+        if (language) {
+            var lang = language[0].replace('@','');
+        } else {
+            var lang = "und";
+        }
+        predicateObj[predicateNoNS] = 
             {
                 "subject": subject,
                 "predicate": predicate, 
-                "object": object.replace('"','').replace('"','')
-            }
-            
-        );       
-    })      
+                "object": object.replace('"','').replace('"','').replace(regex, '').replace('^^http://www.w3.org/2001/XMLSchema#dateTime', ''),
+                "lang": lang
+            };
+        resultJson.value.push(predicateObj);
+        var now = new Date();
+        if (options.expiry) {
+            now.setDate(now.getDate() + options.expiry);
+        } else  {
+            now.setDate(now.getDate() + 7);
+        }        
+        resultJson.date["expiry"] = now;
+    });   
     return resultJson;
 }
 // #######################################################################
