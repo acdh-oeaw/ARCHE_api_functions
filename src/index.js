@@ -135,24 +135,17 @@ module.exports.ARCHErdfQuery = (options, data) => {
             };
         resultJson.value.push(predicateObj);
     });
-    if (options.paginate) {
-        let length = resultJson.value.length;
-        let pages = Math.ceil(length / parseInt(options.paginate));
-        console.log(length);   
-        console.log(pages);                
-        var start = 0;
-        for (var i = 0; i < pages; i++) {            
-            var paginated = resultJson.value.slice(start, start + parseInt(options.paginate));
-            start + parseInt(options.paginate) + 1;
-            resultJson[`value${i}`] = paginated;   
-        }
+    resultJson["fullLength"] = result.length;
+    if (options.paginate) {        
+        var paginate = resultJson.value.slice(options.paginate[0], options.paginate[1]);
+        resultJson["value"] = paginate;
     }
     var now = new Date();
     if (options.expiry) {
         now.setDate(now.getDate() + options.expiry);
     } else  {
         now.setDate(now.getDate() + 7);
-    }        
+    }    
     resultJson.date["expiry"] = now;
     return resultJson
 }
