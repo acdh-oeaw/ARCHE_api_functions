@@ -17,12 +17,12 @@ module.exports.openFile = async(filepath, callback) => {
     };
     try {
         const response = await fetch(filepath, options);
-        console.log("statusCode:", response.statusCode);
-        console.log("headers:", response.headers);
         const body = await response.text();
         return callback(body);
     } catch (error) {
         console.log(error);
+        console.log("statusCode:", response.statusCode);
+        console.log("headers:", response.headers);
     }    
 }
 
@@ -73,12 +73,12 @@ module.exports.ARCHEsearchText = async(host, property0, value0, searchQuery, fts
     console.log(url);
     try {
         const response = await fetch(url, options);
-        console.log("statusCode:", response.statusCode);
-        console.log("headers:", response.headers);
         const body = await response.text();
         return callback(body);
     } catch (error) {
         console.log(error);
+        console.log("statusCode:", response.statusCode);
+        console.log("headers:", response.headers);
     }    
 }
 
@@ -149,6 +149,7 @@ module.exports.ARCHErdfQuery = (options, data) => {
     resultJson.date["expiry"] = now;
     return resultJson
 }
+
 // #######################################################################
 // ### FUNCTION SORT_triples to match two json datasets by subject id ####
 // #######################################################################
