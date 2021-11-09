@@ -22,7 +22,7 @@ or
 
 In HTML:
 
-`<script src="https://unpkg.com/arche-api@1.2.0/lib/arche-api.min.js"></script>`
+`<script src="https://unpkg.com/arche-api@1.2.1/lib/arche-api.min.js"></script>`
 
 ## Download function(s)
 
@@ -58,6 +58,19 @@ downloader(options, (response) => {
   console.log(response);
 })
 ```
+
+From verison 1.2.0 the function will return a Promise:
+
+### Usage: 
+
+```javascript
+const downloader = ARCHEapi.ARCHEdownloadResourceIdM;
+
+downloader(options)
+.then((data) => {
+    console.log(data);
+})
+
 ## RDF query function(s)
 
 So far one RDF query function was created using the node js module N3 (https://github.com/rdfjs/N3.js). The function can handle `text` response data provided by the above download function. Name: `ARCHErdfQuery();` The function works like other rdf queries and requries at least one `<string>` to search for. If `null` is provided it will return a result for `null` based on the search results provided by at least on `<string>`. 
@@ -67,15 +80,16 @@ So far one RDF query function was created using the node js module N3 (https://g
 - `objects: <string> or null` Exp.: "some text" or `null`
 - `data: <string>` as Turtle, TriG, N-Triples, and N-Quads formats (More info: https://github.com/rdfjs/N3.js/#parsing)
 
-Starting from version 1.2.0 the arguments are passed as object `options`:
+Starting from version 1.2.1 the arguments are passed as object `options`:
 
 ```javascript
 "options": {
-  "subject": "string" or null
-  "predicate": "string" or null
-  "objects": "string" or null
-  "data": "string"
-  "expiry": "integer" or null
+  "subject": "string" or null,
+  "predicate": "string" or null,
+  "objects": "string" or null,
+  "data": "string",
+  "expiry": "integer" or null,
+  "pagiante": "array" with start and end e.g. [0, 10] will return the first 10 objects. Default is false. 
 }
 ```
 
