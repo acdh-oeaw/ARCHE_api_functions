@@ -70,6 +70,7 @@ downloader(options)
 .then((data) => {
     console.log(data);
 })
+```
 
 ## RDF query function(s)
 
